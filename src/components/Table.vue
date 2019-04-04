@@ -6,26 +6,36 @@
                 <td v-for="(field, index) in tableFields"
                     :key="index"
                 >
-                  {{field}}
+                  {{ field }}                  
                 </td>
               </tr>
             </thead>
             <tbody>
               <tr v-for="person in persons">
-                <td class="name" 
-                    v-html="highlight(person.name, wordToHighlight)"
-                ></td>
+                <td>{{ person.id }}</td>
+                <td class="name">
+                  <div v-if="!person.editable" 
+                       @click="makeEditable( person )"
+                       v-html="highlight(person.name, wordToHighlight)"
+                  >    
+                  </div>
+                  <textarea v-else 
+                            @keypress.enter.prevent="changeData(person)"
+                            v-model="person.name"
+                            autofocus
+                            @mouseout="makeUneditable(person)"
+                    >
+                    {{person.name}}</textarea>
+                    
+                </td>
 
                 <td class="email" v-html="highlight(person.email, wordToHighlight)">
-                  <!--   <textarea @keyup.prevent.enter="changeData(person.id, person)"
-                              v-model="person.email"
-                           
-                    >
-                    {{person.email}}</textarea> -->
+     
     
                 </td>
                 <td class="city" v-html="highlight(person.city, wordToHighlight)"></td>
                 <td class="phone">{{person.phone}}</textarea></td>
+                <td>{{ person.editable }}</td>
               </tr>
             </tbody>
         </table> 
@@ -45,23 +55,29 @@ export default {
   computed: {
     tableFields() {
       let keys = Object.keys(this.persons[0])
-      return keys.filter(key => key !== "id" && key !== "funds")
+      return keys.filter(key => key !== "funds") //key !== "id" && 
     }
   },
   methods: {
     highlight(text, word) {
-        return text.replace(new RegExp(word, 'gi'), '<span class="hl">$&</span>');
+
+        return word.length > 0 ? text.replace(new RegExp(word, 'gi'), '<span class="hl">$&</span>') : text;
+    },
+    makeEditable(person) {
+      this.persons.forEach( item => item.id === person.id ? item.editable = true : null);
+    },
+    makeUneditable(person) {
+       this.persons.forEach( item => item.id === person.id ? item.editable = false : null);
+      
+    },
+    changeData (person) {
+      this.persons.forEach( item => item.id === person.id ? item.editable = false : null);
+      this.$emit("changeData", person)
     }
   },
-  // watch: {
-  //   wordToHighlight: {
-  //       immediate: true,
-  //       handler( val, oldVal) {
-  //           console.log(val)
-  //       }
-  //   }
-  // }
+ 
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -71,18 +87,18 @@ export default {
     margin: 0 auto;
     border-color: #A8698A;
     td {
-      // textarea {
-      //   box-sizing: border-box;
-      //   resize: none;
-      //   outline: none;
-      //   width: 100%;
-      //   height: 100%;
-      //   border:none;
-      //   &:hover {
-      //       cursor: pointer;
-      //     }
-      // }
-        cursor: pointer;
+      cursor: pointer;
+      textarea {
+        box-sizing: border-box;
+        resize: none;
+        outline: none;
+        width: 100%;
+        height: 100%;
+        border:none;
+      }
+      div {
+        padding: 10px 0;
+      }
     }
   }
   .popup {

@@ -9,9 +9,9 @@
            :currentPage="currentPage"
            :wordToHighlight="wordToHighlight"
            :if="shownPersons"
-           
+           @changeData="setData"
     />
-<!-- @changeData="setData" -->
+
     <Pagination :persons="filteredPersons.length > 0 ? filteredPersons : persons"
                 :currentPage="currentPage"
                 :rowsPerPage="rowsPerPage"
@@ -56,7 +56,7 @@ export default {
           for (let key in person) {
             person[key] = key === "funds" ? parseInt(person[key]) : person[key]
           }
-          return person;
+          return {...person, "editable": false};
         })
 
         let reg =  /(?<=funds:)-*\d+/;
@@ -72,18 +72,17 @@ export default {
     changePage(num){
       this.currentPage = num
     },
-    // setData(id, data){
-    //   console.log(data)
-    //   let url = `${API_URL}/update/:id`;
-    //   return axios.put(url, data)
-    //     .then(function (response) {
-    //       console.log(response.data);
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //         alert('Sorry! Server is not able to process this request at the moment.')
-    //     });
-    // },
+    setData(person){
+      console.log(JSON.stringify(person));
+
+      let url = `${API_URL}/update/:id`;
+      return axios.put(url, {body: JSON.stringify(person)})
+        .then((response) => console.log(response))
+        .catch( (error) => {
+            console.log(error);
+            alert('Sorry! Server is not able to process this request at the moment.');
+        });
+    },
     findMatches(wordToMatch) {
       this.wordToHighlight = wordToMatch
       const regex = new RegExp(wordToMatch, 'gi');

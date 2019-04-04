@@ -2,11 +2,12 @@
     <form>
         <input type="search" 
                name="search"
+               placeholder="search" 
                v-model="wordToSearch"
                @input="search(wordToSearch)"
                >
 
-        <p v-if="searchError">Nothing found</p>
+        <p v-if="searchError">Matches not found</p>
     </form>
 </template>
 
