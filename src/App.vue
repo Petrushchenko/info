@@ -73,7 +73,6 @@ export default {
       this.currentPage = num
     },
     setData(person){
-      console.log(JSON.stringify(person));
 
       let url = `${API_URL}/update/:id`;
       return axios.put(url, {body: JSON.stringify(person)})

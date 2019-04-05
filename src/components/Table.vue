@@ -11,7 +11,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="person in persons">
+              <tr v-for="person in persons" :key="person.id">
                 <td class="name">
                   <div v-if="!person.editable" 
                        @click="makeEditable( person )"
@@ -46,7 +46,7 @@
                             autofocus
                     ></textarea>
                 </td>
-                <td class="phone">{{person.phone}}</textarea></td>
+                <td class="phone">{{person.phone}}</td>
               </tr>
             </tbody>
         </table> 
